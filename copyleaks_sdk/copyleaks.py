@@ -58,7 +58,7 @@ class CopyLeaks(object):
         assert 'Amount' in response.json()
         return response.json()
 
-    def create_process_by_url(self, url):
+    def create_process_by_url(self, url_to_process):
         """
         Creates a process by scanning a URL and returns a response of the following format:
         {
@@ -68,10 +68,10 @@ class CopyLeaks(object):
         :param url: URL to scan
         :return:
         """
-        assert url
+        assert url_to_process
         url = self.base_url + '/v1/detector/create-by-url'
         data = dict(
-            Url=url
+            Url=url_to_process
         )
         data = json.dumps(data)
         response = requests.post(url, headers=self.headers, data=data)
@@ -168,9 +168,6 @@ class CopyLeaks(object):
         url = self.base_url + ('/v1/detector/%s/result' % (process_id))
         response = requests.get(url, headers=self.headers)
         assert response.status_code == 200
-        assert 'NumberOfCopiedWords' in response.json()
-        assert 'Percents' in response.json()
-        assert 'URL' in response.json()
         return response.json()
 
     def get_all_processes(self):
@@ -199,7 +196,7 @@ class CopyLeaks(object):
         :return:
         """
         url = self.base_url + '/v1/detector/list'
-        response = requests.get(url, header=self.headers)
+        response = requests.get(url, headers=self.headers)
         assert response.status_code == 200
         return response.json()
 
@@ -211,7 +208,7 @@ class CopyLeaks(object):
         """
         assert process_id
         url = self.base_url + ('/v1/detector/%s/delete' % (process_id))
-        response = requests.delete(url)
+        response = requests.delete(url, headers=self.headers)
         assert response.status_code == 200
 
 
@@ -225,10 +222,11 @@ class CopyLeaks(object):
 
 
 if __name__ == "__main__":
-    api_key = '32a93db7-d309-87bf-e432-31c18df7fc13'
-    leaks = CopyLeaks('wyounas', api_key)
-    process_id = leaks.create_process_by_file('test_file.txt')['ProcessId']
-    print leaks.get_process_status(process_id)
-    print leaks.get_process_result(process_id)
+    api_key = '7e6f32c4-8d00-fd46-2e98-d406a796b0e2'
+    leaks = CopyLeaks('wyounas4', api_key)
+    url = 'http://www.dawn.com/news/1235307/a-dollar-for-you-hafeez-comes-to-amirs-rescue'
+    process_id = leaks.create_process_by_url(url)['ProcessId']
+    print process_id
+    print leaks.delete_process(process_id)
 
 
