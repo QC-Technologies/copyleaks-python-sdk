@@ -21,6 +21,7 @@ class CopyLeaks(object):
         self.base_url = kwargs.get('base_url') or 'https://api.copyleaks.com'
         self.headers = kwargs.get('headers') or {'content-type': 'application/json'}
         self.access_token = None
+        self.test_mode = kwargs.get('test_mode') or False
         self._login()
 
     def _login(self):
@@ -39,11 +40,13 @@ class CopyLeaks(object):
         response = requests.post(url, headers=self.headers, data=data)
         assert response.status_code == 200
         self.access_token = response.json()['access_token']
-        self._set_authorized_headers()
+        self._set_headers()
 
-    def _set_authorized_headers(self):
+    def _set_headers(self):
         assert self.access_token
         self.headers['Authorization'] = 'Bearer %s' % self.access_token
+        if self.test_mode:
+            self.headers['copyleaks-sandbox-mode'] = ''
 
     def count_credits(self):
         """
@@ -87,14 +90,23 @@ class CopyLeaks(object):
         :param file_path: Valid file path
         :return:
         """
-        files = {'file': (file_path, open(file_path, 'rb').read())}
+        file_name, file_extension = os.path.splitext(file_path)
+        valid_extensions = ['.html', '.txt', '.pdf', '.docx', '.doc', '.rtef', '.jpeg']
+        assert file_extension in valid_extensions
+        if file_extension == '.jpeg':
+            files = {'media': (file_path, open(file_path, 'rb').read())}
+        else:
+            files = {'file': (file_path, open(file_path, 'rb').read())}
         headers = self.headers.copy()
         headers.pop('content-type')
         response = requests.post(url, headers=headers, files=files)
+        print 'Response'
+        print response
+        print response.text
         assert 'CreationTimeUTC' in response.json()
         assert 'ProcessId' in response.json()
         assert response.status_code == 200
-        return response
+        return response.json()
 
 
     def create_process_by_file(self, file_path):
@@ -125,7 +137,9 @@ class CopyLeaks(object):
         :return:
         """
         assert file_path and language
-        url = self.base_url + ('/v1/detector/create-by-ocr?language=%s' % (language))
+        url = self.base_url + ('/v1/detector/create-by-file-ocr?language=%s' % language)
+        data = dict(language='English')
+        data = json.dumps(data)
         return self._upload_file(url, file_path)
 
     def get_process_status(self, process_id):
