@@ -225,22 +225,3 @@ class CopyLeaks(object):
         response = requests.delete(url, headers=self.headers)
         assert response.status_code == 200
 
-
-
-
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    api_key = '7e6f32c4-8d00-fd46-2e98-d406a796b0e2'
-    leaks = CopyLeaks('wyounas4', api_key)
-    url = 'http://www.dawn.com/news/1235307/a-dollar-for-you-hafeez-comes-to-amirs-rescue'
-    process_id = leaks.create_process_by_url(url)['ProcessId']
-    print process_id
-    print leaks.delete_process(process_id)
-
-
