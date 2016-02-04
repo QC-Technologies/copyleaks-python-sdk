@@ -5,7 +5,7 @@ Copyleaks (http://www.copyleaks.com) Python SDK
 
 Create a virtual environment and install dependencies from requirements.txt by running (from the root):
 
-``` > pip install -r requirements.txt
+```> pip install -r requirements.txt```
 ### Setup
 
 You can setup the project by downloading the source code and then running the following command:
