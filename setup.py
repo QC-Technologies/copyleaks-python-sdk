@@ -1,19 +1,24 @@
-
 from setuptools import find_packages
 from distutils.core import setup
 
+
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
 setup(
-    name = 'CopyleaksSDK',
-    packages=find_packages(exclude=['tests*']), # this must be the same as the name above
-    version = '0.1',
-    description = 'A Python SDK for Copyleaks (http://copyleaks.com)',
-    author = 'Waqas Younas',
-    author_email = 'waqas.younas@gmail.com',
+    name='CopyleaksPythonSDK',
+    packages=find_packages(exclude=['tests*']),
+    version='0.1',
+    description='A Python SDK for Copyleaks (http://copyleaks.com)',
+    long_description=readme(),
+    author='Waqas Younas',
+    author_email='waqas.younas@gmail.com',
     url = 'https://github.com/wyounas/copyleaks-python-sdk', # use the URL to the github repo
-    keywords = ['copyleaks', 'copyleakssdk', 'sdk'], # arbitrary keywords
+    keywords=['copyleaks', 'copyleakssdk', 'sdk'],
     install_requires=[
         'requests',
-        'pytest'
+        'retrying'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -24,3 +29,4 @@ setup(
         'Programming Language :: Python :: 2.7',
     ]
 )
+
