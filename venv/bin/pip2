@@ -1,4 +1,4 @@
-#!/Users/waqas/dev/apis/copyleaks/venv/bin/python2.7
+#!/Users/waqas/dev/apis/copyleaks-python-sdk/venv/bin/python2.7
 
 # -*- coding: utf-8 -*-
 import re

@@ -2,9 +2,11 @@
 Python SDK for Copyleaks. More details can be read at https://api.copyleaks.com/Documentation.
 First register on Copyleaks and get the API key.
 """
+
 import requests
 import json
 import os
+from retrying import retry
 
 
 class CopyLeaks(object):
@@ -24,6 +26,7 @@ class CopyLeaks(object):
         self.test_mode = kwargs.get('test_mode') or False
         self._login()
 
+    @retry
     def _login(self):
         """
         Does the login and saves access token for subsequent requests
@@ -48,6 +51,7 @@ class CopyLeaks(object):
         if self.test_mode:
             self.headers['copyleaks-sandbox-mode'] = ''
 
+    @retry
     def count_credits(self):
         """
         Counds credits and returns a response of the form:
@@ -61,6 +65,7 @@ class CopyLeaks(object):
         assert 'Amount' in response.json()
         return response.json()
 
+    @retry
     def create_process_by_url(self, url_to_process):
         """
         Creates a process by scanning a URL and returns a response of the following format:
@@ -83,6 +88,7 @@ class CopyLeaks(object):
         assert 'CreationTimeUTC' in response.json()
         return response.json()
 
+    @retry
     def _upload_file(self, url, file_path):
         """
         Uploads a file for processing.
@@ -100,15 +106,12 @@ class CopyLeaks(object):
         headers = self.headers.copy()
         headers.pop('content-type')
         response = requests.post(url, headers=headers, files=files)
-        print 'Response'
-        print response
-        print response.text
         assert 'CreationTimeUTC' in response.json()
         assert 'ProcessId' in response.json()
         assert response.status_code == 200
         return response.json()
 
-
+    @retry
     def create_process_by_file(self, file_path):
         """
         Creates a process by uploading a file to scan. Returns a response of the format:
@@ -125,6 +128,7 @@ class CopyLeaks(object):
         url = self.base_url + '/v1/detector/create-by-file'
         return self._upload_file(url, file_path)
 
+    @retry
     def create_process_by_ocr(self, file_path, language='English'):
         """
         Creates a process by uploading a file to scan. Returns a response of the format:
@@ -138,10 +142,9 @@ class CopyLeaks(object):
         """
         assert file_path and language
         url = self.base_url + ('/v1/detector/create-by-file-ocr?language=%s' % language)
-        data = dict(language='English')
-        data = json.dumps(data)
         return self._upload_file(url, file_path)
 
+    @retry
     def get_process_status(self, process_id):
         """
         Gets the scan progress and response looks like:
@@ -160,6 +163,7 @@ class CopyLeaks(object):
         assert 'Status' in response.json()
         return response.json()
 
+    @retry
     def get_process_result(self, process_id):
         """
         Gets the scan result and response looks like:
@@ -184,6 +188,7 @@ class CopyLeaks(object):
         assert response.status_code == 200
         return response.json()
 
+    @retry
     def get_all_processes(self):
         """
         Retusn list of all active processes. Response looks like:
@@ -214,6 +219,7 @@ class CopyLeaks(object):
         assert response.status_code == 200
         return response.json()
 
+    @retry
     def delete_process(self, process_id):
         """
         Deletes a process and returns status code of 200 in case of success.
