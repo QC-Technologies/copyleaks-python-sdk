@@ -48,5 +48,13 @@ This project is licensed under the terms of MIT license.
 Tests
 ------
 
+Firstly, in order for tests to run you need a config.py under tests directory containing API credentials. For example,
+we will have a file tests/config.py with following contents:
+
+::
+
+    username = 'USERNAME HERE'
+    api_key = 'API KEY GOES HERE'
+
 You can find tests under copyleaks-python-sdk/tests. Tests are written the built-in unittest module and can simply
 be run from the command line.
