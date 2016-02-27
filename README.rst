@@ -33,6 +33,8 @@ And here is how you can create a process by file:
 >>> response = self.copyleak.create_process_by_file('full_path_of_file.txt')
 ```
 
+There are tests available, kindly look at them for some example code.
+
 ### License
 
 This project is licensed under the terms of MIT license.
