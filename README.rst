@@ -40,11 +40,6 @@ And here is how you can create a process by file:
 
 There are tests available, kindly look at them for some example code.
 
-License
---------
-
-This project is licensed under the terms of MIT license.
-
 Tests
 ------
 
@@ -58,3 +53,8 @@ we will have a file tests/config.py with following contents:
 
 You can find tests under copyleaks-python-sdk/tests. Tests are written the built-in unittest module and can simply
 be run from the command line.
+
+License
+--------
+
+This project is licensed under the terms of MIT license.
